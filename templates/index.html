@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Detection</title>
+</head>
+<body>
+    <h1>Phone Detection System</h1>
+    <p>Click the button below to capture an image and detect phones.</p>
+    <button onclick="captureImage()">Capture Image</button>
+    <div id="result"></div>
+
+    <script>
+        async function captureImage() {
+            document.getElementById('result').innerHTML = "Processing...";
+            try {
+                const response = await fetch('/capture', { method: 'POST' });
+                const data = await response.json();
+                if (data.error) {
+                    document.getElementById('result').innerHTML = `Error: ${data.error}`;
+                } else {
+                    document.getElementById('result').innerHTML = `
+                        <p>${data.message}</p>
+                        <img src="${data.image_url}" alt="Detected Image" style="max-width: 100%;"/>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
