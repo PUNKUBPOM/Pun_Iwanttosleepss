@@ -2,8 +2,6 @@ from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_socketio import SocketIO, emit
 import base64
 
-imageDataGlobal=None
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'pramoatv2'
 socketio = SocketIO(app, async_mode='eventlet')
@@ -44,12 +42,6 @@ def handle_client_image(image_data):
 def get_image():
     return send_from_directory('static', 'received_image.jpg') 
 
-@app.route('/capture', methods=['POST'])
-def capture_image():
-    emit('server_request_image')
-    while imageDataGlobal is not None:
-        print('Image data received.')
-        break
 
 if __name__ == '__main__':
-    socketio.run(app, host='127.0.0.1',port=5000,debug=True)
+    socketio.run(app, host='0.0.0.0',port=5000,debug=True)
