@@ -5,30 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-Time Detection</title>
 </head>
-<body>
+<body style="background-color: #6cf9bf;">
     <h1>Phone Detection System</h1>
     <p>Click the button below to capture an image and detect phones.</p>
     <button onclick="captureImage()">Capture Image</button>
     <div id="result"></div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
     <script>
-        async function captureImage() {
-            document.getElementById('result').innerHTML = "Processing...";
-            try {
-                const response = await fetch('/capture', { method: 'POST' });
-                const data = await response.json();
-                if (data.error) {
-                    document.getElementById('result').innerHTML = `Error: ${data.error}`;
-                } else {
-                    document.getElementById('result').innerHTML = `
-                        <p>${data.message}</p>
-                        <img src="${data.image_url}" alt="Detected Image" style="max-width: 100%;"/>
-                    `;
-                }
-            } catch (error) {
-                document.getElementById('result').innerHTML = `Error: ${error.message}`;
-            }
+        const socket = io('http://127.0.0.1:5000'); // Replace with your server's address
+
+        function captureImage() {
+            const fileInput = document.getElementById('imageInput');
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const imageData = e.target.result;
+                socket.emit('client_image', imageData);
+            };
+
+            reader.readAsDataURL(fileInput.files[0]);
         }
+
+        socket.on('server_image', (imageData) => {
+            const receivedImage = document.getElementById('receivedImage');
+            receivedImage.src = `data:image/jpeg;base64,${imageData}`; 
+        });
     </script>
 </body>
 </html>
