@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-Time Detection</title>
 </head>
-<body style="background-color: #6cf9bf;">
+<body style="background-color: #ffffff;">
     <h1>Phone Detection System</h1>
     <p>Click the button below to capture an image and detect phones.</p>
     <button onclick="captureImage()">Capture Image</button>
@@ -15,16 +15,8 @@
         const socket = io('http://127.0.0.1:5000'); // Replace with your server's address
 
         function captureImage() {
-            const fileInput = document.getElementById('imageInput');
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                const imageData = e.target.result;
-                socket.emit('client_image', imageData);
+                socket.emit('requestImage');
             };
-
-            reader.readAsDataURL(fileInput.files[0]);
-        }
 
         socket.on('server_image', (imageData) => {
             const receivedImage = document.getElementById('receivedImage');
