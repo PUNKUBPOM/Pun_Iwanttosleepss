@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Detection</title>
+</head>
+<body style="background-color: #ffffff;">
+    <h1>Phone Detection System</h1>
+    <p>Click the button below to capture an image and detect phones.</p>
+    <button onclick="captureImage()">Capture Image</button>
+    <div id="result"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+    <script>
+        const socket = io('http://127.0.0.1:5000'); // Replace with your server's address
+
+        function captureImage() {
+                socket.emit('requestImage');
+            };
+
+        socket.on('server_image', (imageData) => {
+            const receivedImage = document.getElementById('receivedImage');
+            receivedImage.src = `data:image/jpeg;base64,${imageData}`; 
+        });
+    </script>
+</body>
+</html>

@@ -20,7 +20,12 @@ def handle_connect():
 def handle_disconnect():
     print('Client disconnected')
 
-@socketio.on('client_image')
+@socketio.on('requestImage')
+def handle_request_image():
+    print('Received request for image')
+    emit('serverRequestImage')
+
+@socketio.on('serverGetImage')
 def handle_client_image(image_data):
     try:
         if image_data.startswith("data:image/"): 
@@ -28,13 +33,8 @@ def handle_client_image(image_data):
             image_bytes = base64.b64decode(encoded_data) 
         else:
             image_bytes = image_data 
-        with open('received_image.jpg', 'wb') as f:
-            f.write(image_bytes)
-        response = {
-            'message': 'Image received and processed successfully.',
-            'image_url': '/received_image.jpg'
-        }
-        emit('server_response', response) 
+
+        emit('server_image', image_bytes) 
 
     except Exception as e:
         print(f"Error processing image: {e}")
